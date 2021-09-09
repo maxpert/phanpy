@@ -5,8 +5,7 @@ Phanpy is dead simple JSON streaming HTTP interface over Postgres to execute you
 ## Motivation
 
 Unlike [PostgREST](https://postgrest.org/en/v8.0/index.html) Phanpy only embraces the philosophy of 
-providing an HTTP interface to Postgres. Unlike other HTTP interfaces Phanpy embraces SQL queries 
-and parameters first class citizens. 
+providing an HTTP interface to Postgres and embraces SQL queries and parameters as first class citizens. 
 
 ## Zero Abstraction
 Phanpy takes SQL for what it is; a well understood, well document, and well practiced language 
