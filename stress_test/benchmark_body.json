@@ -1,0 +1,5 @@
+{
+  "query": "SELECT md5(random()::text) AS some_data, * FROM generate_series(1, (random() * 400)::int) ORDER BY RANDOM()",
+  "params": [],
+  "timeout": 30
+}
