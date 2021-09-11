@@ -39,7 +39,12 @@ func main() {
 	}
 
 	logger.Info("Now booting server on address ", listenAddress)
-	if err := http.ListenAndServe(listenAddress, core.Routes(logger.Named("routes"))); err != nil {
+	routeHandler := core.Routes(logger.Named("routes"))
+	server := http.Server{
+		Addr: listenAddress,
+		Handler: routeHandler,
+	}
+	if err := server.ListenAndServe(); err != nil {
 		logger.Error(err)
 	}
 }

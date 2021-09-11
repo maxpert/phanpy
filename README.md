@@ -2,6 +2,8 @@
 
 Phanpy is dead simple JSON streaming HTTP interface over Postgres to execute your queries.
 
+> Disclaimer: This is an experimental software. Use in production at your own risk.
+
 ## Motivation
 
 Unlike [PostgREST](https://postgrest.org/en/v8.0/index.html) Phanpy only embraces the philosophy of 
@@ -101,4 +103,25 @@ During all of this maximum memory was reported under 50MB RSS; avg runtime stats
   },
   "total_conns": 16
 }
+```
+
+## Named queries
+
+Often in production it will require you to have clear visibility on various queries you are running. Unlike everything
+under single path (e.g. `/graphql`) this will not only let you integrate existing tools to measure latency, it will
+also let you do predefine well written queries and optimize them with tooling.
+
+Right now named queries can be defined in `queries.yml` file under current working directory (or file path in 
+`NAMED_QUERIES` environment variable). Here is an example:
+
+```yaml
+- name: get_series
+  query: SELECT md5(random()::text) AS hash, * FROM generate_series(1, $1) ORDER BY RANDOM()
+  timeout: 10
+```
+
+Now you can run this named query using:
+
+```bash
+curl -v --data '[40000]' http://localhost:8080/query/get_series
 ```

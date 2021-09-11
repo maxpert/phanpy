@@ -6,8 +6,8 @@ require (
 	github.com/jackc/pgproto3/v2 v2.1.1
 	github.com/jackc/pgx/v4 v4.13.0
 	github.com/julienschmidt/httprouter v1.3.0
-	github.com/sony/gobreaker v0.4.1
 	go.uber.org/zap v1.13.0
+	gopkg.in/yaml.v2 v2.2.2
 )
 
 require (

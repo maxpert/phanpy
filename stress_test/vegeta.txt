@@ -2,3 +2,6 @@ POST http://localhost:8080/
 Content-Type: application/json
 @./benchmark_body.json
 
+POST http://localhost:8080/query/get_series
+Content-Type: application/json
+@./get_series_body.json
