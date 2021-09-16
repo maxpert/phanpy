@@ -16,6 +16,8 @@ var arrayStart = []byte("[")
 var arrayEnd = []byte("]")
 var arraySeparator = []byte(",")
 
+const flushRowBatch = 100
+
 func rowToMap(description []pgproto3.FieldDescription, row []interface{}) (map[string]interface{}, error) {
 	if len(description) != len(row) {
 		return nil, errors.New("column size does not match for row mapping")
@@ -36,12 +38,12 @@ func streamResponse(w http.ResponseWriter, rows pgx.Rows, logger *zap.SugaredLog
 	w.WriteHeader(200)
 
 	fields := rows.FieldDescriptions()
-	first := true
+	rowsCount := 0
 
-	w.Write(arrayStart)
+	_, _ = w.Write(arrayStart)
 	flusher.Flush()
 	defer func() {
-		w.Write(arrayEnd)
+		_, _ = w.Write(arrayEnd)
 		flusher.Flush()
 	}()
 
@@ -64,10 +66,8 @@ func streamResponse(w http.ResponseWriter, rows pgx.Rows, logger *zap.SugaredLog
 			break
 		}
 
-		if first {
-			first = false
-		} else {
-			w.Write(arraySeparator)
+		if rowsCount != 0 {
+			_, _ = w.Write(arraySeparator)
 		}
 
 		_, err = w.Write(serRowMap)
@@ -76,7 +76,10 @@ func streamResponse(w http.ResponseWriter, rows pgx.Rows, logger *zap.SugaredLog
 			break
 		}
 
-		flusher.Flush()
+		rowsCount++
+		if int(rowsCount % flushRowBatch) == 0 {
+			flusher.Flush()
+		}
 	}
 }
 
@@ -92,7 +95,7 @@ func streamQueryResponse(
 	rs, err := connectionPool.Query(ctx, queryReq.Query, queryReq.Params...)
 	if err != nil {
 		w.WriteHeader(500)
-		fmt.Fprintf(w, "Error: %v", err)
+		_, _ = fmt.Fprintf(w, "Error: %v", err)
 		return
 	}
 

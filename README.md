@@ -18,7 +18,8 @@ various dialects of SQL. All queries are prepared and executed as is!
 
 Phanpy requires only two environment variables:
  - `ENV` enviroment of running `prod` means production where it uses production loggers, everything else is development
- - `DB_URL` a full URL according to [pgx](https://github.com/jackc/pgx) specifications e.g. `postgresql://<user>:<password>@localhost:5432/<database>?statement_cache_capacity=128&statement_cache_mode=prepare&pool_max_conns=16`
+ - `DB_URL` a full URL according to [pgx](https://github.com/jackc/pgx) 
+    specifications e.g. `postgresql://<user>:<password>@localhost:5432/<database>?statement_cache_capacity=128&statement_cache_mode=prepare&pool_max_conns=16`
 
 After launching `phanpy` you can use cURL to run your queries:
 
