@@ -9,6 +9,8 @@ import (
 	"github.com/jackc/pgx/v4"
 	"go.uber.org/zap"
 	"net/http"
+	"os"
+	"strconv"
 	"time"
 )
 
@@ -16,7 +18,21 @@ var arrayStart = []byte("[")
 var arrayEnd = []byte("]")
 var arraySeparator = []byte(",")
 
-const flushRowBatch = 100
+var flushRowBatch = readOsEnvInt("FLUSH_ROW_BATCH", 100)
+
+func readOsEnvInt(name string, fallback int) int {
+	v := os.Getenv(name)
+	if v == "" {
+		return fallback
+	}
+
+	ret, err := strconv.Atoi(v)
+	if err != nil {
+		return fallback
+	}
+
+	return ret
+}
 
 func rowToMap(description []pgproto3.FieldDescription, row []interface{}) (map[string]interface{}, error) {
 	if len(description) != len(row) {
@@ -41,7 +57,6 @@ func streamResponse(w http.ResponseWriter, rows pgx.Rows, logger *zap.SugaredLog
 	rowsCount := 0
 
 	_, _ = w.Write(arrayStart)
-	flusher.Flush()
 	defer func() {
 		_, _ = w.Write(arrayEnd)
 		flusher.Flush()
