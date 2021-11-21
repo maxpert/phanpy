@@ -34,7 +34,7 @@ func NamedQueryHandler(logger *zap.SugaredLogger) httprouter.Handle {
 
 		r := requestBody{
 			Timeout: queryInfo.Timeout,
-			Query:   queryInfo.Query,
+			Query:   queryInfo.SQL,
 			Params:  queryParams,
 		}
 		streamQueryResponse(request.Context(), writer, r, logger)
